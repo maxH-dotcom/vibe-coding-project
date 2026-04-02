@@ -7,6 +7,7 @@ import { contactLinks, getFeaturedProjects, posts, profile, skillMatrix, timelin
 
 export default function Home() {
   const featuredProjects = getFeaturedProjects();
+  const hasPosts = posts.length > 0;
 
   return (
     <PageShell>
@@ -94,8 +95,8 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
         <SectionHeading
           eyebrow="Featured"
-          title="A first MVP with room to grow into a full portfolio system."
-          description="This homepage introduces your positioning, selected work, writing, and contact paths without forcing everything into one long scroll."
+          title="当前公开的项目还不多，但已经能看到思路的方向。"
+          description="这版 MVP 先把个人定位、代表项目、关于信息和联系路径稳定下来，后续再逐步扩展更多作品。"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {featuredProjects.map((project) => (
@@ -107,11 +108,11 @@ export default function Home() {
       <section className="border-y border-white/10 bg-white/[0.03]">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-20 lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
           <div>
-            <SectionHeading
-              eyebrow="About"
-              title="A clear profile for recruiters, collaborators, and curious peers."
-              description="Enough signal to explain your trajectory, strengths, and current focus without overwhelming the landing page."
-            />
+          <SectionHeading
+            eyebrow="About"
+            title="一个更接近当前状态的个人说明。"
+            description="不是把自己包装得很满，而是先把我关心什么、正在做什么、以及我如何思考工作流表达清楚。"
+          />
             <div className="mt-8 grid gap-4">
               {timeline.map((item) => (
                 <div key={item.title} className="rounded-2xl border border-white/10 bg-slate-950/40 p-5">
@@ -150,30 +151,42 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SectionHeading
-            eyebrow="Writing"
-            title="Recent notes on AI UX, workflow, and frontend craft."
-            description="A simple editorial layer makes the portfolio feel alive and gives your thinking somewhere to live."
-          />
-          <Link href="/blog" className="text-sm font-medium text-accent">
-            Visit blog
-          </Link>
-        </div>
-        <div className="mt-10 grid gap-5">
-          {posts.slice(0, 2).map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </div>
-      </section>
+      {hasPosts ? (
+        <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <SectionHeading
+              eyebrow="Writing"
+              title="Recent notes on AI UX, workflow, and frontend craft."
+              description="A simple editorial layer makes the portfolio feel alive and gives your thinking somewhere to live."
+            />
+            <Link href="/blog" className="text-sm font-medium text-accent">
+              Visit blog
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-5">
+            {posts.slice(0, 2).map((post) => (
+              <PostCard key={post.slug} post={post} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
+            <SectionHeading
+              eyebrow="Writing"
+              title="博客内容正在整理中。"
+              description="后续这里会慢慢放入我对 vibe coding、workflow、框架搭建和项目实践的记录。"
+            />
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-6xl px-6 pb-24 lg:px-8">
         <div className="rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-white/8 to-white/[0.03] p-8 shadow-soft sm:p-10">
           <SectionHeading
             eyebrow="Contact"
             title="Make it easy for the right people to reach you."
-            description="The MVP includes direct contact links and a styled form block you can wire up later."
+            description="目前优先保留最直接的联系路径。如果你愿意交流、批判、提建议，都欢迎来信。"
           />
           <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="space-y-4">

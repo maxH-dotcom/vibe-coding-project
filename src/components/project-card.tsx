@@ -18,9 +18,21 @@ export function ProjectCard({ project }: { project: Project }) {
         ))}
       </div>
       <div className="mt-8 flex items-center justify-between">
-        <Link href={project.href} className="text-sm font-medium text-accent">
-          View details
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href={project.href} className="text-sm font-medium text-accent">
+            View details
+          </Link>
+          {project.demoHref ? (
+            <a
+              href={project.demoHref}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-slate-300 transition hover:text-white"
+            >
+              Open demo
+            </a>
+          ) : null}
+        </div>
         <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
           {project.status}
         </span>

@@ -6,12 +6,19 @@ export type Project = {
   summary: string;
   challenge: string;
   outcome: string;
+  role: string;
   type: ProjectType;
   year: string;
   stack: string[];
   href: string;
+  demoHref?: string;
   status: string;
   featured?: boolean;
+  highlights: string[];
+  detailSections: {
+    title: string;
+    body: string;
+  }[];
 };
 
 export type Post = {
@@ -32,151 +39,124 @@ export type TimelineItem = {
 };
 
 export const profile = {
-  name: "Your Name",
-  role: "AI builder, frontend engineer, and design-minded maker",
+  name: "何孟谦",
+  role: "Vibe coding 的使用者，工作流的思考者，框架的搭建者",
   intro:
-    "I turn ideas into polished digital experiments, blending code, interface craft, and AI-native workflows into products people actually want to use.",
-  location: "Based in Shanghai, available remotely",
-  email: "hello@example.com",
-  availability: "Open to product engineering and creative AI roles",
-  tags: ["LLM Apps", "React / Next.js", "Design Systems", "Creative Coding"],
+    "这是何孟谦的 vibe coding 作品集，欢迎批判并提供建议。No worries, just be fun! 我更关心的不只是把东西做出来，也包括如何组织工作流、如何搭建框架、以及怎样把想法持续变成作品。",
+  location: "Based in China",
+  email: "mengqianhe2002@163.com",
+  availability: "Open to feedback, collaboration, and new experiments",
+  tags: ["Vibe Coding", "Workflow Thinking", "Framework Building", "HTML Prototyping"],
   stats: [
-    { label: "Selected projects", value: "12+" },
-    { label: "Years building", value: "5" },
-    { label: "Domains explored", value: "AI / Web / Design" }
+    { label: "Published project", value: "1" },
+    { label: "Current mode", value: "Building" },
+    { label: "Focus", value: "Workflow / MVP / Systems" }
   ]
 };
 
 export const projects: Project[] = [
   {
-    slug: "agent-console",
-    title: "Agent Console for Research Workflows",
+    slug: "todo-html",
+    title: "To Do HTML",
     summary:
-      "A multi-step AI workspace for planning, execution, and artifact review with structured outputs and human checkpoints.",
+      "一个独立完成的待办事项工作网站，使用 HTML、CSS 和原生 JavaScript 搭建，围绕任务录入、完成状态管理和工作秩序感展开。",
     challenge:
-      "Turn a fuzzy AI workflow into something operators could trust, inspect, and steer without losing speed.",
+      "在不依赖框架的前提下，做出一个真正能用的待办事项页面，同时让视觉风格、信息层级和交互反馈都保持统一，而不是只完成最基础的列表功能。",
     outcome:
-      "Created a console-style interface that breaks long AI tasks into visible checkpoints, summaries, and reusable outputs.",
-    type: "AI Project",
-    year: "2026",
-    stack: ["Next.js", "TypeScript", "OpenAI", "Vercel"],
-    href: "/projects/agent-console",
-    status: "Prototype",
-    featured: true
-  },
-  {
-    slug: "visual-portfolio-cms",
-    title: "Visual Portfolio CMS",
-    summary:
-      "A lightweight content system for managing design cases, development notes, and blog posts from one MDX-driven workflow.",
-    challenge:
-      "Make personal publishing feel structured enough for long-term maintenance without pulling in a heavyweight CMS.",
-    outcome:
-      "Built a file-driven workflow that keeps content local, composable, and easy to version with the codebase.",
+      "最终做出了一个具有明确视觉语言的工作清单网站，支持本地持久化、完成切换、删除、清空已完成、实时统计和相对时间显示，也更准确地表达了我对 workflow 界面的审美和理解。",
+    role: "独立完成想法整理、页面结构搭建与 MVP 实现。",
     type: "Code",
-    year: "2025",
-    stack: ["MDX", "Tailwind CSS", "Content Modeling"],
-    href: "/projects/visual-portfolio-cms",
-    status: "Live"
-  },
-  {
-    slug: "motion-language-study",
-    title: "Motion Language Study",
-    summary:
-      "An interface exploration focused on scroll rhythm, ambient gradients, and subtle micro-interactions for storytelling pages.",
-    challenge:
-      "Explore motion and pacing without overwhelming the content or turning the page into a demo reel.",
-    outcome:
-      "Developed a reusable motion language for sections, cards, and transitions that still feels calm and readable.",
-    type: "Design",
-    year: "2025",
-    stack: ["Figma", "Framer Motion", "Design Tokens"],
-    href: "/projects/motion-language-study",
-    status: "Case Study"
+    year: "2026",
+    stack: ["HTML", "CSS", "JavaScript", "localStorage"],
+    href: "/projects/todo-html",
+    demoHref: "/demos/todo-html",
+    status: "MVP",
+    featured: true,
+    highlights: [
+      "双语标题与工业感视觉系统",
+      "任务新增、完成、删除、清空已完成",
+      "总任务 / 已完成 / 待完成实时统计",
+      "基于 localStorage 的本地持久化",
+      "相对时间展示与空状态处理",
+      "纯原生 HTML + CSS + JavaScript 实现"
+    ],
+    detailSections: [
+      {
+        title: "项目背景与目标",
+        body:
+          "这个项目从一个很直接的问题开始：如果每天都要面对待办事项，页面应该如何帮助我更快地进入状态，而不是只是多一个列表。To Do HTML 的目标不是堆很多功能，而是先在最轻的技术条件下，把任务管理的骨架和界面秩序感做出来。"
+      },
+      {
+        title: "我的角色和职责",
+        body:
+          "这个项目由我独立推进，从概念、命名、视觉基调，到页面结构和交互逻辑都由我自己完成。它不只是一个前端练习，更像一次关于 workflow 界面如何成立的个人实验。"
+      },
+      {
+        title: "页面结构与工作流",
+        body:
+          "页面主体被拆成标题区、统计区、输入区、任务列表、空状态和底部操作区。这样的结构让用户进入页面后可以马上理解当前任务状态、直接录入新任务，并随时处理已完成项。这种从上到下的组织方式，和我对 workflow 可读性的关注是连在一起的。"
+      },
+      {
+        title: "交互和布局思路",
+        body:
+          "这个页面最吸引我的地方其实是它的氛围感。你用了偏工业风的深色配色、IBM Plex Mono 与 Noto Serif SC 的中英文字体组合、噪点和扫描线叠层，以及细节很完整的 hover、入场和删除动画。它不是普通的待办应用模板，而是带着明显个人审美的一次界面表达。"
+      },
+      {
+        title: "限制与取舍",
+        body:
+          "目前项目仍然保持在单文件原生实现的层面，因此复杂功能、跨端同步和更强的数据结构都还没有引入。但这种克制本身也是一种选择，因为它迫使我先把最核心的交互逻辑和视觉秩序打磨清楚。"
+      },
+      {
+        title: "下一步优化方向",
+        body:
+          "后续我希望继续给这个项目补上更多维度，比如任务分类、优先级、筛选视图、编辑能力，以及把当前这套视觉语言拓展成更完整的工作流产品界面。它也很适合作为我后续框架化思考的一个起点。"
+      }
+    ]
   }
 ];
 
-export const posts: Post[] = [
-  {
-    slug: "designing-ai-interfaces",
-    title: "Designing AI Interfaces That Still Feel Human",
-    excerpt:
-      "A practical breakdown of interaction patterns that make AI products feel trustworthy, legible, and calm.",
-    date: "Mar 18, 2026",
-    readTime: "6 min read",
-    tags: ["AI UX", "Design"],
-    href: "/blog/designing-ai-interfaces",
-    body: [
-      "The best AI interfaces do not try to look magical. They create calm through legible states, explicit feedback, and controlled pacing.",
-      "When users can tell what the model is doing, what it produced, and what they should do next, trust goes up immediately.",
-      "That means good defaults, visible checkpoints, and language that sounds grounded rather than theatrical."
-    ]
-  },
-  {
-    slug: "shipping-with-mdx",
-    title: "What I Learned Shipping with MDX as a Personal CMS",
-    excerpt:
-      "Why file-based content still wins for small personal sites, and where it starts to bend under scale.",
-    date: "Feb 04, 2026",
-    readTime: "4 min read",
-    tags: ["Next.js", "MDX"],
-    href: "/blog/shipping-with-mdx",
-    body: [
-      "MDX works well when the site owner is also the editor. The filesystem becomes the source of truth, and content evolves alongside the components.",
-      "The tradeoff appears when content workflows need collaboration, approvals, or rich editorial tooling.",
-      "For a personal portfolio, that tradeoff is usually worth it because speed and ownership matter more."
-    ]
-  },
-  {
-    slug: "vibe-coding-workflow",
-    title: "A Vibe Coding Workflow That Actually Survives Production",
-    excerpt:
-      "Prompting can move fast, but systems need structure. This post covers the guardrails that keep velocity useful.",
-    date: "Jan 09, 2026",
-    readTime: "7 min read",
-    tags: ["Workflow", "Engineering"],
-    href: "/blog/vibe-coding-workflow",
-    body: [
-      "Fast prototyping is only useful if the system remains explainable after the first burst of momentum.",
-      "I keep a lightweight loop: define intent, generate a draft, review structure, and only then expand the surface area.",
-      "That rhythm keeps AI assistance from turning into a maintenance problem later."
-    ]
-  }
-];
+export const posts: Post[] = [];
 
 export const timeline: TimelineItem[] = [
   {
-    period: "2025 - Now",
-    title: "Independent AI Product Builder",
+    period: "Now",
+    title: "Vibe Coding Practitioner",
     description:
-      "Building experiments across AI tooling, portfolio systems, and productized frontend experiences."
+      "持续使用 vibe coding 的方式做实验、做页面、做最小可用产品，也在观察这套方式真正擅长什么。"
   },
   {
-    period: "2023 - 2025",
-    title: "Frontend Engineer / Design Collaborator",
+    period: "Ongoing",
+    title: "Workflow Thinker",
     description:
-      "Worked across product surfaces, component systems, and interaction design with a strong bias for craft."
+      "相比只关注结果，我更在意任务如何被拆解、流程如何被整理，以及一个系统怎样更顺手地支持创作。"
   },
   {
-    period: "2020 - 2023",
-    title: "Creative Technologist",
+    period: "Ongoing",
+    title: "Framework Builder",
     description:
-      "Explored the overlap of code, visuals, and storytelling through websites, prototypes, and digital branding."
+      "我希望把自己的项目逐步沉淀成可复用的结构，让每一次制作都不只是完成，而是积累。"
   }
 ];
 
 export const skillMatrix = [
-  { label: "Product Thinking", level: "Advanced" },
-  { label: "React / Next.js", level: "Advanced" },
-  { label: "AI Prototyping", level: "Advanced" },
-  { label: "Design Systems", level: "Intermediate+" },
-  { label: "Motion / Interaction", level: "Intermediate+" }
+  { label: "Vibe Coding", level: "Advanced" },
+  { label: "Workflow Thinking", level: "Advanced" },
+  { label: "Framework Building", level: "Advanced" },
+  { label: "MVP Structuring", level: "Intermediate+" },
+  { label: "HTML Prototyping", level: "Intermediate+" }
 ];
 
 export const contactLinks = [
-  { label: "Email", value: "hello@example.com", href: "mailto:hello@example.com" },
-  { label: "GitHub", value: "github.com/your-handle", href: "https://github.com/" },
-  { label: "LinkedIn", value: "linkedin.com/in/your-handle", href: "https://linkedin.com/" }
+  {
+    label: "Primary Email",
+    value: "mengqianhe2002@163.com",
+    href: "mailto:mengqianhe2002@163.com"
+  },
+  {
+    label: "Backup Email",
+    value: "maxmqh2@gmail.com",
+    href: "mailto:maxmqh2@gmail.com"
+  }
 ];
 
 export function getFeaturedProjects() {

@@ -36,12 +36,44 @@ export default function ProjectDetailPage({
             {project.title}
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{project.summary}</p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/projects"
+              className="rounded-full border border-white/15 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/5"
+            >
+              All projects
+            </Link>
+            {project.demoHref ? (
+              <a
+                href={project.demoHref}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full bg-accent px-5 py-3 text-sm font-medium text-slate-950 transition hover:translate-y-[-1px]"
+              >
+                Open live demo
+              </a>
+            ) : null}
+          </div>
           <div className="mt-8 flex flex-wrap gap-2">
             {project.stack.map((item) => (
               <span key={item} className="rounded-full border border-white/10 px-3 py-1 text-sm text-slate-300">
                 {item}
               </span>
             ))}
+          </div>
+          <div className="mt-8">
+            <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Highlights</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {project.highlights.map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-8 rounded-2xl border border-white/10 bg-slate-950/30 p-5">
+            <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Role</p>
+            <p className="mt-3 leading-8 text-slate-300">{project.role}</p>
           </div>
         </div>
 
@@ -57,18 +89,12 @@ export default function ProjectDetailPage({
         </div>
 
         <div className="mt-10 rounded-[2rem] border border-white/10 bg-panel p-8">
-          <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Case Study Skeleton</p>
-          <div className="mt-6 grid gap-6 lg:grid-cols-3">
-            {[
-              "Background and goal",
-              "Role and responsibilities",
-              "Architecture and workflow",
-              "Design decisions",
-              "Tradeoffs and constraints",
-              "Results and next steps"
-            ].map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300">
-                {item}
+          <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Project Notes</p>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            {project.detailSections.map((section) => (
+              <div key={section.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 className="text-lg font-medium text-white">{section.title}</h2>
+                <p className="mt-3 leading-8 text-slate-300">{section.body}</p>
               </div>
             ))}
           </div>

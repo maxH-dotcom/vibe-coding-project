@@ -8,15 +8,13 @@ export default function AboutPage() {
       <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
         <SectionHeading
           eyebrow="About"
-          title="A fuller profile beyond the first impression."
-          description="This page is where your background, working style, and skill shape can become more credible and memorable."
+          title="比首页更完整一点的自我描述。"
+          description="先把目前最真实的关注点放在这里：vibe coding、workflow、框架搭建，以及如何把这些东西慢慢变成自己的方法。"
         />
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
             <p className="text-lg leading-8 text-slate-200">
-              {profile.name} builds digital experiences that sit between product thinking, design
-              craft, and AI-assisted execution. The goal is not only to ship quickly, but to make
-              the output feel coherent and intentional.
+              {profile.name} 现在更像一个持续实验中的实践者。我使用 vibe coding，但也不只满足于“能生成出来”，而是更想理解一套工作方式怎样变得稳定、可复用、可持续。
             </p>
             <div className="mt-8 grid gap-4">
               {timeline.map((item) => (
@@ -47,8 +45,7 @@ export default function AboutPage() {
               ))}
             </div>
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300">
-              Current focus: portfolio systems, AI product workflows, and expressive frontend
-              experiences that still feel structured and usable.
+              Current focus: 把个人项目从零散的尝试，逐步沉淀成更清晰的 workflow 和更可靠的框架。
             </div>
           </div>
         </div>

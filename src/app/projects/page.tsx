@@ -9,11 +9,11 @@ export default function ProjectsPage() {
       <section className="mx-auto max-w-6xl px-6 py-20 lg:px-8">
         <SectionHeading
           eyebrow="Projects"
-          title="A filter-ready gallery for AI products, code work, and design studies."
-          description="This MVP keeps the data simple, but the structure is ready for MDX-backed details, screenshots, and richer taxonomy later."
+          title="当前公开作品"
+          description="先把已经完成或能展示的项目放上来。随着后续内容补充，这里会逐步成长为更完整的个人作品集。"
         />
         <div className="mt-8 flex flex-wrap gap-3">
-          {["All", "AI Project", "Code", "Design", "Live", "Prototype"].map((chip) => (
+          {["All", "Code", "MVP", "HTML"].map((chip) => (
             <span key={chip} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
               {chip}
             </span>

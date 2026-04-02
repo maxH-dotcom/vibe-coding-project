@@ -7,6 +7,14 @@ const nextConfig = {
         hostname: "images.unsplash.com"
       }
     ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/demos/todo-html",
+        destination: "/demos/todo-html/index.html"
+      }
+    ];
   }
 };
 

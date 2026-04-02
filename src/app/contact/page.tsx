@@ -8,8 +8,8 @@ export default function ContactPage() {
       <section className="mx-auto max-w-5xl px-6 py-20 lg:px-8">
         <SectionHeading
           eyebrow="Contact"
-          title="A clean handoff for conversations, interviews, and collaborations."
-          description="The MVP keeps contact friction low: direct links on the left, polished form styling on the right."
+          title="欢迎来交流，也欢迎来批判。"
+          description="如果你对我的项目、思路、workflow 或这套网站本身有建议，可以直接邮件联系我。"
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-4">

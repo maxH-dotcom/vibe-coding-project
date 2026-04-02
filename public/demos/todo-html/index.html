@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORK LIST // 工序清单</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1a1917;
+            --bg-secondary: #232220;
+            --bg-tertiary: #2d2b28;
+            --text-primary: #e8e4df;
+            --text-secondary: #9a9590;
+            --text-muted: #5c5955;
+            --accent: #d4a853;
+            --accent-dim: #8b7035;
+            --danger: #c45c4a;
+            --border: #3d3a36;
+            --completed: #4a4a45;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.1) 2px,
+                rgba(0,0,0,0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 24px;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .header__main {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .header__title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .header__divider {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        .header__cn {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+        }
+
+        .header__meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Stats bar */
+        .stats {
+            display: flex;
+            gap: 32px;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out 0.1s forwards;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat__value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .stat__value--accent {
+            color: var(--accent);
+        }
+
+        .stat__label {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Input section */
+        .input-section {
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out 0.2s forwards;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 12px;
+        }
+
+        .input {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input:focus {
+            border-color: var(--accent-dim);
+            box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.1);
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 16px 28px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.4s;
+        }
+
+        .btn-add:hover {
+            background: #e5b964;
+        }
+
+        .btn-add:hover::before {
+            left: 100%;
+        }
+
+        .btn-add:active {
+            transform: scale(0.98);
+        }
+
+        /* Task list */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .task {
+            display: flex;
+            align-items: stretch;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: taskIn 0.4s ease-out forwards;
+            transition: border-color 0.2s;
+        }
+
+        .task:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .task--completed {
+            opacity: 0.6;
+        }
+
+        .task--completed .task__text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task__checkbox {
+            width: 48px;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .task__checkbox input {
+            display: none;
+        }
+
+        .task__check {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .task__checkbox:hover .task__check {
+            border-color: var(--accent);
+        }
+
+        .task__checkbox input:checked + .task__check {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .task__checkbox input:checked + .task__check::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            width: 4px;
+            height: 8px;
+            border: solid var(--bg-primary);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .task__index {
+            width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-right: 1px solid var(--border);
+            flex-shrink: 0;
+            letter-spacing: 0.05em;
+        }
+
+        .task__content {
+            flex: 1;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .task__text {
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: color 0.3s;
+        }
+
+        .task__time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-left: auto;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+            padding-left: 16px;
+        }
+
+        .task__delete {
+            width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-left: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .task__delete:hover {
+            background: var(--danger);
+            color: var(--text-primary);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 0.3s forwards;
+        }
+
+        .empty-state__icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-state__text {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            animation: slideIn 0.6s ease-out 0.4s forwards;
+        }
+
+        .footer__hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .footer__hint kbd {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 2px;
+            border: 1px solid var(--border);
+            margin: 0 2px;
+        }
+
+        .footer__clear {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .footer__clear:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes taskIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes taskOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+
+        .task--removing {
+            animation: taskOut 0.3s ease-out forwards !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 16px;
+            }
+
+            .header__cn {
+                font-size: 24px;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .stat__value {
+                font-size: 22px;
+            }
+
+            .task__time {
+                display: none;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header__main">
+                <h1 class="header__title">WORK LIST</h1>
+                <div class="header__divider"></div>
+            </div>
+            <p class="header__cn">工序清单</p>
+            <p class="header__meta">// 日常任务管理系统</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat__value" id="totalCount">0</span>
+                <span class="stat__label">总任务</span>
+            </div>
+            <div class="stat">
+                <span class="stat__value stat__value--accent" id="completedCount">0</span>
+                <span class="stat__label">已完成</span>
+            </div>
+            <div class="stat">
+                <span class="stat__value" id="pendingCount">0</span>
+                <span class="stat__label">待完成</span>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <input type="text" class="input" id="taskInput" placeholder="输入新任务... (回车添加)" maxlength="100" autocomplete="off">
+                <button class="btn-add" id="addBtn">+ 添加</button>
+            </div>
+        </div>
+
+        <div class="task-list" id="taskList"></div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state__icon">□</div>
+            <p class="empty-state__text">暂无任务 — 开始添加</p>
+        </div>
+
+        <footer class="footer">
+            <span class="footer__hint"><kbd>Enter</kbd> 快速添加 · <kbd>Esc</kbd> 清空输入</span>
+            <button class="footer__clear" id="clearCompleted">清除已完成</button>
+        </footer>
+    </div>
+
+    <script>
+        // State
+        let tasks = JSON.parse(localStorage.getItem('worklist-tasks')) || [];
+
+        // DOM Elements
+        const taskInput = document.getElementById('taskInput');
+        const addBtn = document.getElementById('addBtn');
+        const taskList = document.getElementById('taskList');
+        const emptyState = document.getElementById('emptyState');
+        const totalCount = document.getElementById('totalCount');
+        const completedCount = document.getElementById('completedCount');
+        const pendingCount = document.getElementById('pendingCount');
+        const clearCompleted = document.getElementById('clearCompleted');
+
+        // Save to localStorage
+        function saveTasks() {
+            localStorage.setItem('worklist-tasks', JSON.stringify(tasks));
+        }
+
+        // Format time
+        function formatTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return `${minutes}分钟前`;
+            if (hours < 24) return `${hours}小时前`;
+            return `${days}天前`;
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const pending = total - completed;
+
+            totalCount.textContent = total;
+            completedCount.textContent = completed;
+            pendingCount.textContent = pending;
+        }
+
+        // Render single task
+        function createTaskElement(task, index) {
+            const div = document.createElement('div');
+            div.className = `task${task.completed ? ' task--completed' : ''}`;
+            div.style.animationDelay = `${index * 0.05}s`;
+            div.dataset.id = task.id;
+
+            div.innerHTML = `
+                <label class="task__checkbox">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''}>
+                    <span class="task__check"></span>
+                </label>
+                <span class="task__index">${String(index + 1).padStart(2, '0')}</span>
+                <div class="task__content">
+                    <span class="task__text">${escapeHtml(task.text)}</span>
+                </div>
+                <span class="task__time">${formatTime(task.createdAt)}</span>
+                <button class="task__delete" title="删除">×</button>
+            `;
+
+            return div;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render all tasks
+        function renderTasks() {
+            taskList.innerHTML = '';
+
+            if (tasks.length === 0) {
+                emptyState.style.display = 'block';
+                taskList.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                taskList.style.display = 'flex';
+
+                // Sort: incomplete first
+                const sorted = [...tasks].sort((a, b) => a.completed - b.completed);
+
+                sorted.forEach((task, index) => {
+                    taskList.appendChild(createTaskElement(task, index));
+                });
+            }
+
+            updateStats();
+        }
+
+        // Add task
+        function addTask(text) {
+            const trimmed = text.trim();
+            if (!trimmed) return;
+
+            const task = {
+                id: Date.now().toString(),
+                text: trimmed,
+                completed: false,
+                createdAt: new Date()
+            };
+
+            tasks.push(task);
+            saveTasks();
+            renderTasks();
+
+            // Scroll to new task
+            taskList.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        // Toggle task
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                task.completedAt = task.completed ? new Date() : null;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Delete task
+        function deleteTask(id) {
+            const taskEl = taskList.querySelector(`[data-id="${id}"]`);
+            if (taskEl) {
+                taskEl.classList.add('task--removing');
+                setTimeout(() => {
+                    tasks = tasks.filter(t => t.id !== id);
+                    saveTasks();
+                    renderTasks();
+                }, 300);
+            }
+        }
+
+        // Clear completed
+        function clearCompletedTasks() {
+            const completedTasks = taskList.querySelectorAll('.task--completed');
+            completedTasks.forEach(el => el.classList.add('task--removing'));
+
+            setTimeout(() => {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                renderTasks();
+            }, 300);
+        }
+
+        // Event listeners
+        addBtn.addEventListener('click', () => {
+            addTask(taskInput.value);
+            taskInput.value = '';
+            taskInput.focus();
+        });
+
+        taskInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                addTask(taskInput.value);
+                taskInput.value = '';
+            } else if (e.key === 'Escape') {
+                taskInput.value = '';
+            }
+        });
+
+        taskList.addEventListener('click', (e) => {
+            const taskEl = e.target.closest('.task');
+            if (!taskEl) return;
+
+            const id = taskEl.dataset.id;
+
+            if (e.target.closest('.task__checkbox')) {
+                toggleTask(id);
+            } else if (e.target.closest('.task__delete')) {
+                deleteTask(id);
+            }
+        });
+
+        clearCompleted.addEventListener('click', clearCompletedTasks);
+
+        // Update time display periodically
+        setInterval(() => {
+            taskList.querySelectorAll('.task__time').forEach((el, i) => {
+                const task = tasks[i];
+                if (task) {
+                    el.textContent = formatTime(task.createdAt);
+                }
+            });
+        }, 60000);
+
+        // Initial render
+        renderTasks();
+    </script>
+</body>
+</html>
